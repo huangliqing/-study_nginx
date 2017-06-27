@@ -476,7 +476,11 @@ ngx_http_upstream_create(ngx_http_request_t *r)
     return NGX_OK;
 }
 
-
+/*
+add tag by hlq
+1、upstream 入口
+2、调用ngx_http_upstream_connect
+*/
 void
 ngx_http_upstream_init(ngx_http_request_t *r)
 {
@@ -1324,7 +1328,14 @@ ngx_http_upstream_check_broken_connection(ngx_http_request_t *r,
     }
 }
 
-
+/*
+add tag by hlq
+1、使用非阻塞套接字
+2、添加socket读写事件到epoll ngx_add_conn(c)
+3、handler为ngx_http_upstream_handler
+4、write_event_handler = ngx_http_upstream_send_request_handler;
+5、read_event_handler = ngx_http_upstream_process_header;
+*/
 static void
 ngx_http_upstream_connect(ngx_http_request_t *r, ngx_http_upstream_t *u)
 {
