@@ -18,8 +18,8 @@ typedef void *            ngx_buf_tag_t;
 typedef struct ngx_buf_s  ngx_buf_t;
 
 struct ngx_buf_s {
-    u_char          *pos;
-    u_char          *last;
+    u_char          *pos;//用于mem，对于只读缓冲，start到pos标示已读，
+    u_char          *last;//对于只读缓冲，pos到last标示需要读取而未读取，对于只写缓冲，pos到last标示已写，last到end标示还可以写入。对于可读可写缓冲区，需注意这四个指针
     off_t            file_pos;
     off_t            file_last;
 
@@ -37,17 +37,17 @@ struct ngx_buf_s {
      * the buf's content is in a memory cache or in a read only memory
      * and must not be changed
      */
-    unsigned         memory:1;
+    unsigned         memory:1;//标示缓冲区是内存缓冲
 
     /* the buf's content is mmap()ed and must not be changed */
     unsigned         mmap:1;
 
     unsigned         recycled:1;
-    unsigned         in_file:1;
-    unsigned         flush:1;
+    unsigned         in_file:1;//标志缓冲区时文件缓冲，使用file_pos和file_last标示缓冲的文件段
+    unsigned         flush:1;//标志需要立即发送缓冲的所有数据
     unsigned         sync:1;
-    unsigned         last_buf:1;
-    unsigned         last_in_chain:1;
+    unsigned         last_buf:1;//标示整个响应最后一个缓冲区，nginx会立即发送缓冲的所有数据
+    unsigned         last_in_chain:1;//标示当前uri处理的最后一个缓冲区，用于使用subrequest的情况，基于缓冲的操作发现此标志时必须处理
 
     unsigned         last_shadow:1;
     unsigned         temp_file:1;
